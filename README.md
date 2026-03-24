@@ -9,3 +9,14 @@ Junto a una arquitectura de microservicios muy sofisticada permitiendo el manten
 - Springboot
 - React
 - MongoDB
+- vercel
+- render
+
+## Microservicios
+- eureka
+- gateway
+- usuarios
+- inventario
+- logistica
+- necesidades
+- donaciones
