@@ -1,13 +1,13 @@
-package com.donaton.usuarios;
+package com.usuarios.api_usuarios;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UsuariosApplication {
+public class ApiUsuariosApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(UsuariosApplication.class, args);
+		SpringApplication.run(ApiUsuariosApplication.class, args);
 	}
 
 }

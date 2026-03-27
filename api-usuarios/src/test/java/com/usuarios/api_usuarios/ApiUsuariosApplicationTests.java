@@ -1,10 +1,10 @@
-package com.donaton.usuarios;
+package com.usuarios.api_usuarios;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UsuariosApplicationTests {
+class ApiUsuariosApplicationTests {
 
 	@Test
 	void contextLoads() {
