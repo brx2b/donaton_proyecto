@@ -20,7 +20,7 @@
         </processorPath>
         <module name="necesidades" />
       </profile>
-      <profile name="Annotation profile for logistica" enabled="true">
+      <profile name="Annotation profile for donaciones" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />

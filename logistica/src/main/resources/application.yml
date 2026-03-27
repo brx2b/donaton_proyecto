@@ -1,4 +1,2 @@
-spring.application.name=donaciones
-
 spring.mongodb.uri=mongodb+srv://admin_donaton:conexmongo@cluster0.xglvnxz.mongodb.net/donaciones
-server.port=8082
+server.port=808
