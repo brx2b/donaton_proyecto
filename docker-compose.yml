@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   eureka-server:
-    build: ./eureka-server
+    build: ./eureka
     ports:
       - "8761:8761"
 
@@ -15,32 +15,32 @@ services:
       - eureka-server
 
   ms-donaciones:
-    build: ./donaciones
+    build: ./api-donaciones
     ports:
       - "8082:8082"
     depends_on:
       - eureka-server
   ms-inventario:
-    build: ./inventario
+    build: ./api-inventario
     ports:
       - "8083:8083"
     depends_on:
       - eureka-server
   ms-logistica:
-    build: ./logistica
+    build: ./api-logistica
     ports:
       - "8084:8084"
     depends_on:
       - eureka-server
   ms-necesidades:
-    build: ./necesidades
+    build: ./api-necesidades
     ports:
       - "8085:8085"
     depends_on:
       - eureka-server
   api-gateway:
-    build: ./api-gateway
+    build: ./gateway
     ports:
-      - "8080:8080"
+      - "8086:8086"
     depends_on:
       - eureka-server

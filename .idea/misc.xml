@@ -12,6 +12,10 @@
         <option value="$PROJECT_DIR$/inventario/pom.xml" />
         <option value="$PROJECT_DIR$/necesidades/pom.xml" />
         <option value="$PROJECT_DIR$/api-usuarios/pom.xml" />
+        <option value="$PROJECT_DIR$/api-donaciones/pom.xml" />
+        <option value="$PROJECT_DIR$/api-inventario/pom.xml" />
+        <option value="$PROJECT_DIR$/api-logistica/pom.xml" />
+        <option value="$PROJECT_DIR$/api-necesidades/pom.xml" />
       </list>
     </option>
   </component>
