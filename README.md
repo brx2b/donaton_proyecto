@@ -13,10 +13,14 @@ Junto a una arquitectura de microservicios muy sofisticada permitiendo el manten
 - render
 
 ## Microservicios
-- eureka
-- gateway
 - usuarios
 - inventario
 - logistica
 - necesidades
 - donaciones
+
+## Eureka
+
+## Gateway
+
+## MongoDB Atlas
