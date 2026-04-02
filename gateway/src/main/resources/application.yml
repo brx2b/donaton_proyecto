@@ -4,6 +4,46 @@ server:
 spring:
   application:
     name: ms-gateway
+  cloud:
+      gateway:
+        server:
+          webmvc:
+            routes:
+
+              - id: ruta-usuarios
+                uri: lb://api-usuarios
+                predicates:
+                  - Path=/api/usuarios/**
+                filters:
+                  - StripPrefix=1
+
+              - id: ruta-donaciones
+                uri: lb://api-donaciones
+                predicates:
+                  - Path=/api/doanciones/**
+                filters:
+                  - StripPrefix=1
+
+              - id: ruta-necesidades
+                uri: lb://api-necesidades
+                predicates:
+                  - Path=/api/necesidades/**
+                filters:
+                  - StripPrefix=1
+
+              - id: ruta-inventario
+                uri: lb://api-inventario
+                predicates:
+                  - Path=/api/usuarios/**
+                filters:
+                  - StripPrefix=1
+
+              - id: ruta-logistica
+                uri: lb://api-usuarios
+                predicates:
+                  - Path=/api/usuarios/**
+                filters:
+                  - StripPrefix=1
 
 eureka:
   client:

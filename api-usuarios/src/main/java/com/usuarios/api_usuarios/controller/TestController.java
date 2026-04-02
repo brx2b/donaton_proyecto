@@ -17,7 +17,7 @@ public class TestController {
 
     @GetMapping
     public String probarConexion() {
-        repo.count(); // Esto obliga a Spring a conectarse a Atlas
+        //prueba de conex a atlas
         return "Conexión exitosa a MongoDB Atlas";
     }
 }
