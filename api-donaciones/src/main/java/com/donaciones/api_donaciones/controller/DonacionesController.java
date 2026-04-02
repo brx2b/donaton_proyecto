@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/donaciones")
+@RequestMapping("/donaciones") //endpoint principal GET
 public class DonacionesController {
     @Autowired
     private DonacionesRepository repo;
