@@ -3,6 +3,7 @@ package com.donaciones.api_donaciones.controller;
 import com.donaciones.api_donaciones.client.UsuarioCliente;
 import com.donaciones.api_donaciones.model.DonacionesModel;
 import com.donaciones.api_donaciones.repository.DonacionesRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,10 @@ public class DonacionesController {
     private List<DonacionesModel> listarDonaciones(){
         return repo.findAll();
     }
+
     @PostMapping
-    public ResponseEntity<?> registrarDonacion(@RequestBody DonacionesModel nuevaDonacion){
-        try{
+    public ResponseEntity<?> registrarDonacion(@Valid @RequestBody DonacionesModel nuevaDonacion){
+        try{ //error 500 al post
             usuarioClient.obtenerUsuario(nuevaDonacion.getUsuarioId());
             return ResponseEntity.ok(repo.save(nuevaDonacion));
         }catch(Exception e){
@@ -30,4 +32,12 @@ public class DonacionesController {
                     + nuevaDonacion.getUsuarioId() + "no existe");
         }
     }
+
+    /*/
+    @PostMapping //Post nuevo usuario si cumple con lo requerido del model, validaciones de jakarta
+    public ResponseEntity<UsuarioModel> crearUsuario(@Valid @RequestBody UsuarioModel nuevoUsuario){
+        UsuarioModel usuarioGuardado = repo.save(nuevoUsuario);
+        return ResponseEntity.ok(usuarioGuardado); //si es ok 200 se guarda el usuario luego de las validaciones
+    }
+    /*/
 }

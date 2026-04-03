@@ -1,18 +1,17 @@
 package com.necesidades.api_necesidades.model;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "necesidades")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class NecesidadesModel {
     @Id
     private String id;
     private String usuarioId;
+    @NotBlank(message = "La descripción no puede quedar vacía")
     private String desc;
     private String fecha;
+    @NotBlank(message = "Se debe especificar la sede")
     private String sede;
 }
