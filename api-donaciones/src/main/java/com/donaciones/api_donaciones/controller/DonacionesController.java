@@ -24,12 +24,12 @@ public class DonacionesController {
 
     @PostMapping
     public ResponseEntity<?> registrarDonacion(@Valid @RequestBody DonacionesModel nuevaDonacion){
-        try{ //error 500 al post
+        try{
             usuarioClient.obtenerUsuario(nuevaDonacion.getUsuarioId());
             return ResponseEntity.ok(repo.save(nuevaDonacion));
         }catch(Exception e){
             return ResponseEntity.status(404).body("error usuario con id "
-                    + nuevaDonacion.getUsuarioId() + "no existe");
+                    + nuevaDonacion.getUsuarioId());
         }
     }
 
