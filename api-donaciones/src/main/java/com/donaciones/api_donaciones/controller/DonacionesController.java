@@ -22,7 +22,7 @@ public class DonacionesController {
         return repo.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/donar")
     public ResponseEntity<?> registrarDonacion(@Valid @RequestBody DonacionesModel nuevaDonacion){
         try{
             usuarioClient.obtenerUsuario(nuevaDonacion.getUsuarioId());

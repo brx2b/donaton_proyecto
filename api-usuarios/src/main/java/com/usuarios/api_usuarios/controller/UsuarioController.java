@@ -21,7 +21,7 @@ public class UsuarioController {
         return repo.findAll();
     }
 
-    @PostMapping //Post nuevo usuario si cumple con lo requerido del model, validaciones de jakarta
+    @PostMapping("/nuevoUsuario") //Post nuevo usuario si cumple con lo requerido del model, validaciones de jakarta
     public ResponseEntity<UsuarioModel> crearUsuario(@Valid @RequestBody UsuarioModel nuevoUsuario){
         UsuarioModel usuarioGuardado = repo.save(nuevoUsuario);
         return ResponseEntity.ok(usuarioGuardado); //si es ok 200 se guarda el usuario luego de las validaciones

@@ -23,7 +23,7 @@ public class InventarioController {
     public List<InventarioModel> encontrarSede(@RequestParam String nombre){
         return repo.findBySede(nombre);
     }
-    @PostMapping
+    @PostMapping("/nuevoInventario")
     public ResponseEntity<?> registrarInventario(@Valid @RequestBody InventarioModel nuevoInventario){
         try{
             List<InventarioModel> nombreSede = repo.findBySede(nuevoInventario.getSede());

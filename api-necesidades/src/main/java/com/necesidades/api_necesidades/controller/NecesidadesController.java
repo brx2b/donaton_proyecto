@@ -23,7 +23,7 @@ public class NecesidadesController {
     public List<NecesidadesModel> listarNecesidades(){
         return repo.findAll();
     }
-    @PostMapping
+    @PostMapping("/nuevaNecesidad")
     public ResponseEntity<?> registrarDonacion(@Valid @RequestBody NecesidadesModel nuevaNecesidad) {
         try {
             usuarioClient.obtenerUsuario(nuevaNecesidad.getUsuarioId());
@@ -40,4 +40,31 @@ public class NecesidadesController {
         }
 
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarNecesidad(@PathVariable String id){
+        try{
+            repo.deleteById(id);
+            return ResponseEntity.ok("Se eleminó correctamente");
+        }catch (Exception e){
+            return ResponseEntity.status(404).body("No se encontró");
+        }
+    }
 }
+/*/
+@DeleteMapping("/{matricula}")
+    public ResponseEntity<?> eliminarEncargo(@PathVariable String matricula){
+
+        try{
+            String matri = matricula.toUpperCase();
+            if(!repo.existsByMatricula(matri)){
+                return ResponseEntity.status(404).body("No se encontro en circulacion");
+            }
+            repo.deleteByMatricula(matri);
+            return ResponseEntity.ok("Viaje eliminado");
+        }catch (Exception e){
+            return ResponseEntity.status(500).body("Error interno del servidor");
+        }
+
+    }
+
+ /*/
