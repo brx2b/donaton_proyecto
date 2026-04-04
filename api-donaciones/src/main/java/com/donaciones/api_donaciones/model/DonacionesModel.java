@@ -16,6 +16,5 @@ public class DonacionesModel {
     @NotNull(message = "No puede quedar vacío") //evita nulo
     @Positive(message = "Mayor a 0 solamente") //evita ingresar un numero negativo o igual a 0
     private Double monto;
-
     private String fecha;
 }
