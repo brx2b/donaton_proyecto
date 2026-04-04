@@ -18,7 +18,7 @@ public class DonacionesController {
     @Autowired
     private UsuarioCliente usuarioClient;
     @GetMapping
-    private List<DonacionesModel> listarDonaciones(){
+    public List<DonacionesModel> listarDonaciones(){
         return repo.findAll();
     }
 

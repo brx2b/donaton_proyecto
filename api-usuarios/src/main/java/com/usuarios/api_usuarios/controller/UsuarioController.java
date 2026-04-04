@@ -33,4 +33,5 @@ public class UsuarioController {
         //si existe OK 200, sino not found 404
         return usuario.map(ResponseEntity::ok).orElseGet(()-> ResponseEntity.notFound().build());
     }
+
 }

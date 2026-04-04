@@ -20,7 +20,7 @@ public class NecesidadesController {
     @Autowired
     private UsuarioCliente usuarioClient;
     @GetMapping
-    private List<NecesidadesModel> listarNecesidades(){
+    public List<NecesidadesModel> listarNecesidades(){
         return repo.findAll();
     }
     @PostMapping

@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/inventarios")
+@RequestMapping("/inventario")
 public class InventarioController {
     @Autowired
     private InventarioRepository repo;
 
     @GetMapping
-    private List<InventarioModel> listarInventario(){
+    public List<InventarioModel> listarInventario(){
         return repo.findAll();
     }
     @GetMapping("/nombre")
-    private List<InventarioModel> encontrarSede(@RequestParam String nombre){
+    public List<InventarioModel> encontrarSede(@RequestParam String nombre){
         return repo.findBySede(nombre);
     }
     @PostMapping
-    private ResponseEntity<?> registrarInventario(@Valid @RequestBody InventarioModel nuevoInventario){
+    public ResponseEntity<?> registrarInventario(@Valid @RequestBody InventarioModel nuevoInventario){
         try{
             List<InventarioModel> nombreSede = repo.findBySede(nuevoInventario.getSede());
             if(nombreSede.isEmpty()){

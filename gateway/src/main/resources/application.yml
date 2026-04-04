@@ -9,41 +9,40 @@ spring:
         server:
           webmvc:
             routes:
-
               - id: ruta-usuarios
-                uri: lb://api-usuarios
+                uri: lb://ms-usuarios
                 predicates:
-                  - Path=/api/usuarios/**
+                  - Path=/usuarios,/usuarios/**
                 filters:
-                  - StripPrefix=1
+                  - StripPrefix=0
 
               - id: ruta-donaciones
-                uri: lb://api-donaciones
+                uri: lb://ms-donaciones
                 predicates:
-                  - Path=/api/doanciones/**
+                  - Path=/donaciones,/donaciones/**
                 filters:
-                  - StripPrefix=1
+                  - StripPrefix=0
 
               - id: ruta-necesidades
-                uri: lb://api-necesidades
+                uri: lb://ms-necesidades
                 predicates:
-                  - Path=/api/necesidades/**
+                  - Path=/necesidades,/necesidades/**
                 filters:
-                  - StripPrefix=1
+                  - StripPrefix=0
 
               - id: ruta-inventario
-                uri: lb://api-inventario
+                uri: lb://ms-inventario
                 predicates:
-                  - Path=/api/usuarios/**
+                  - Path=/inventario,/inventario/**
                 filters:
-                  - StripPrefix=1
+                  - StripPrefix=0
 
               - id: ruta-logistica
-                uri: lb://api-usuarios
+                uri: lb://ms-logistica
                 predicates:
-                  - Path=/api/usuarios/**
+                  - Path=/logistica,/logistica/**
                 filters:
-                  - StripPrefix=1
+                  - StripPrefix=0
 
 eureka:
   client:

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: ms-invetario
+    name: ms-inventario
 
 eureka:
   client:

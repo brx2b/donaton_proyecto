@@ -17,17 +17,17 @@ public class LogisticaController {
     @Autowired
     private LogisticaRepository repo;
     @GetMapping
-    private List<LogisticaModel> listarLogistica(){
+    public List<LogisticaModel> listarLogistica(){
         return repo.findAll();
     }
     @GetMapping("/{id}")
-    private ResponseEntity<?> buscarPorId(@PathVariable String id){
+    public ResponseEntity<?> buscarPorId(@PathVariable String id){
         Optional<LogisticaModel> logistica = repo.findById(id);
         return ResponseEntity.ok(logistica);
     }
 
     @PostMapping
-    private ResponseEntity<?> RegistrarLogistica(@Valid @RequestBody LogisticaModel nuevaLogistica){
+    public ResponseEntity<?> RegistrarLogistica(@Valid @RequestBody LogisticaModel nuevaLogistica){
         try{
             List<LogisticaModel> res = repo.findByMatricula(nuevaLogistica.getMatricula());
             if(res.isEmpty()){
@@ -40,7 +40,7 @@ public class LogisticaController {
         }
     }
     @DeleteMapping("/{matricula}")
-    private ResponseEntity<?> eliminarEncargo(@PathVariable String matricula){
+    public ResponseEntity<?> eliminarEncargo(@PathVariable String matricula){
 
         try{
             String matri = matricula.toUpperCase();
