@@ -40,7 +40,7 @@ public class InventarioController {
         repo.deleteById(id);
         return ResponseEntity.ok("Inventario eliminado");
 
-    }
+    } //verificacion si no existe la id
 
 
 }
