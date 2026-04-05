@@ -3,8 +3,10 @@ package com.donaciones.api_donaciones.controller;
 import com.donaciones.api_donaciones.client.UsuarioCliente;
 import com.donaciones.api_donaciones.model.DonacionesModel;
 import com.donaciones.api_donaciones.repository.DonacionesRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,7 @@ public class DonacionesController {
         return repo.findAll();
     }
 
+    @CircuitBreaker(name ="usuariosCB",fallbackMethod = "fallbackUsuarios")
     @PostMapping("/donar")
     public ResponseEntity<?> registrarDonacion(@Valid @RequestBody DonacionesModel nuevaDonacion){
         try{
@@ -31,6 +34,9 @@ public class DonacionesController {
             return ResponseEntity.status(404).body("error usuario con id "
                     + nuevaDonacion.getUsuarioId());
         }
+    }
+    public ResponseEntity<?> fallbackUsuarios(DonacionesModel nuevaDonacion,Exception e){
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Error interno");
     }
     @DeleteMapping("{id}")
     public ResponseEntity<?> eliminarDonacion(@PathVariable String id){
