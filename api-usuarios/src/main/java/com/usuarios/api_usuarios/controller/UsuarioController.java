@@ -33,5 +33,13 @@ public class UsuarioController {
         //si existe OK 200, sino not found 404
         return usuario.map(ResponseEntity::ok).orElseGet(()-> ResponseEntity.notFound().build());
     }
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarPorId(@PathVariable String id){
+        try{
+            repo.deleteById(id);
+            return ResponseEntity.ok("Se ha elimado correctamente");
+        }catch (Exception e){
+            return ResponseEntity.status(404).body("No se ha encontrado usuario con id "+id);
+        }
+    }
 }

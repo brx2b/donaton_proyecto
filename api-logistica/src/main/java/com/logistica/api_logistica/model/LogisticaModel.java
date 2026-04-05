@@ -16,4 +16,8 @@ public class LogisticaModel {
     private String chofer;
     @NotBlank
     private String matricula;
+    @NotBlank
+    private String destino;
+    @NotBlank
+    private String origen;
 }

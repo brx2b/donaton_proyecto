@@ -32,6 +32,15 @@ public class DonacionesController {
                     + nuevaDonacion.getUsuarioId());
         }
     }
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> eliminarDonacion(@PathVariable String id){
+        try{
+            repo.deleteById(id);
+            return ResponseEntity.ok("Se ha eliminado correctamente la donacion");
+        }catch (Exception e){
+            return ResponseEntity.status(404).body("No se ha encontrado");
+        }
+    }
 
     /*/
     @PostMapping //Post nuevo usuario si cumple con lo requerido del model, validaciones de jakarta

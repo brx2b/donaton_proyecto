@@ -26,21 +26,24 @@ public class InventarioController {
     @PostMapping("/nuevoInventario")
     public ResponseEntity<?> registrarInventario(@Valid @RequestBody InventarioModel nuevoInventario){
         try{
-            List<InventarioModel> nombreSede = repo.findBySede(nuevoInventario.getSede());
-            if(nombreSede.isEmpty()){
+            List<InventarioModel> nombreSede = repo.findBySede(nuevoInventario.getSede()); //busca las sedes de los inventarios
+            if(nombreSede.isEmpty()){//si la sede no existe lo guarda
                 return ResponseEntity.ok(repo.save(nuevoInventario));
             }
-            return ResponseEntity.ok("Ya existe el nombre de sede");
+            return ResponseEntity.ok("La sede ya existe registrada");
         }catch (Exception e){
-            return ResponseEntity.status(404).body("error :V");
+            return ResponseEntity.status(404).body("Ocurrió un problema verifica los campos");
         }
     }
     @DeleteMapping("/{id}")
     private ResponseEntity<?> eliminarInventario(@PathVariable String id){
-        repo.deleteById(id);
-        return ResponseEntity.ok("Inventario eliminado");
-
-    } //verificacion si no existe la id
+        try {
+            repo.deleteById(id);
+            return ResponseEntity.ok("Inventario eliminado");
+        }catch (Exception e){
+            return ResponseEntity.status(404).body("No se encontro inventario con id "+id);
+        }
+    }
 
 
 }
