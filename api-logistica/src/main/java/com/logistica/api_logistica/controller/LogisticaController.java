@@ -26,7 +26,7 @@ public class LogisticaController {
         return ResponseEntity.ok(logistica);
     }
 
-    @PostMapping
+    @PostMapping("/nuevaLogistica")
     public ResponseEntity<?> RegistrarLogistica(@Valid @RequestBody LogisticaModel nuevaLogistica){
         try{
             List<LogisticaModel> res = repo.findByMatricula(nuevaLogistica.getMatricula());

@@ -23,7 +23,7 @@ public class NecesidadesController {
     public List<NecesidadesModel> listarNecesidades(){
         return repo.findAll();
     }
-    @PostMapping
+    @PostMapping("/nuevaNecesidad")
     public ResponseEntity<?> registrarDonacion(@Valid @RequestBody NecesidadesModel nuevaNecesidad) {
         try {
             usuarioClient.obtenerUsuario(nuevaNecesidad.getUsuarioId());
@@ -39,5 +39,14 @@ public class NecesidadesController {
             return ResponseEntity.status(500).body("error del servidor");
         }
 
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarNecesidad(@PathVariable String id){
+        try{
+            repo.deleteById(id);
+            return ResponseEntity.ok("Se eleminó correctamente");
+        }catch (Exception e){
+            return ResponseEntity.status(404).body("No se encontró");
+        }
     }
 }

@@ -21,7 +21,7 @@ public class UsuarioController {
         return repo.findAll();
     }
 
-    @PostMapping //Post nuevo usuario si cumple con lo requerido del model, validaciones de jakarta
+    @PostMapping("/nuevoUsuario") //Post nuevo usuario si cumple con lo requerido del model, validaciones de jakarta
     public ResponseEntity<UsuarioModel> crearUsuario(@Valid @RequestBody UsuarioModel nuevoUsuario){
         UsuarioModel usuarioGuardado = repo.save(nuevoUsuario);
         return ResponseEntity.ok(usuarioGuardado); //si es ok 200 se guarda el usuario luego de las validaciones
@@ -33,5 +33,13 @@ public class UsuarioController {
         //si existe OK 200, sino not found 404
         return usuario.map(ResponseEntity::ok).orElseGet(()-> ResponseEntity.notFound().build());
     }
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarPorId(@PathVariable String id){
+        try{
+            repo.deleteById(id);
+            return ResponseEntity.ok("Se ha elimado correctamente");
+        }catch (Exception e){
+            return ResponseEntity.status(404).body("No se ha encontrado usuario con id "+id);
+        }
+    }
 }
