@@ -3,6 +3,8 @@ package com.donaciones.api_donaciones.controller;
 import com.donaciones.api_donaciones.client.UsuarioCliente;
 import com.donaciones.api_donaciones.model.DonacionesModel;
 import com.donaciones.api_donaciones.repository.DonacionesRepository;
+import com.donaciones.api_donaciones.service.DonacionFactory;
+import com.donaciones.api_donaciones.service.DonacionesProcesador;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,10 @@ import java.util.List;
 public class DonacionesController {
     @Autowired
     private DonacionesRepository repo;
+
+    @Autowired
+    private DonacionFactory factory; //injeccion factory
+
     @Autowired
     private UsuarioCliente usuarioClient;
     @GetMapping
@@ -28,9 +34,15 @@ public class DonacionesController {
     @PostMapping("/donar")
     public ResponseEntity<?> registrarDonacion(@Valid @RequestBody DonacionesModel nuevaDonacion){
         try{
-            usuarioClient.obtenerUsuario(nuevaDonacion.getUsuarioId());
+            usuarioClient.obtenerUsuario(nuevaDonacion.getUsuarioId()); //valida si existe el user
+            DonacionesProcesador procesador= factory.getProcesador(nuevaDonacion.getTipo());
+
+            procesador.procesar(nuevaDonacion);
             return ResponseEntity.ok(repo.save(nuevaDonacion));
-        }catch(Exception e){
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(400).body("Error en el tipo de donacion "+e.getMessage());
+        }
+        catch(Exception e){
             return ResponseEntity.status(404).body("error usuario con id "
                     + nuevaDonacion.getUsuarioId());
         }
@@ -48,11 +60,4 @@ public class DonacionesController {
         }
     }
 
-    /*/
-    @PostMapping //Post nuevo usuario si cumple con lo requerido del model, validaciones de jakarta
-    public ResponseEntity<UsuarioModel> crearUsuario(@Valid @RequestBody UsuarioModel nuevoUsuario){
-        UsuarioModel usuarioGuardado = repo.save(nuevoUsuario);
-        return ResponseEntity.ok(usuarioGuardado); //si es ok 200 se guarda el usuario luego de las validaciones
-    }
-    /*/
 }
