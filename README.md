@@ -18,9 +18,3 @@ Junto a una arquitectura de microservicios muy sofisticada permitiendo el manten
 - logistica
 - necesidades
 - donaciones
-
-## Eureka
-
-## Gateway
-
-## MongoDB Atlas
