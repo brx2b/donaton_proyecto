@@ -44,7 +44,7 @@ public class DonacionesController {
         }
         catch(Exception e){
             return ResponseEntity.status(404).body("error usuario con id "
-                    + nuevaDonacion.getUsuarioId());
+                    + nuevaDonacion.getUsuarioId()+" "+e.getMessage());
         }
     }
     public ResponseEntity<?> fallbackUsuarios(DonacionesModel nuevaDonacion,Exception e){

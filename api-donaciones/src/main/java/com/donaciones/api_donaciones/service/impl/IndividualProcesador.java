@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class IndividualProcesador implements DonacionesProcesador {
     @Override
     public void procesar(DonacionesModel donacion) {
+        System.out.println("Procesando donación inidividual");
         // Lógica para personas naturales
         if(donacion.getMonto()<=1000){
             throw new IllegalArgumentException("Las donaciones deben ser superiores a $1.000");
