@@ -1,4 +1,4 @@
-# Proyecto Donaton - "Ayuda en camino" (en desarrollo)
+# Proyecto Donaton - "Ayuda en camino"
 Donaton es la nueva aplicación de ayuda humanitaria en emergencias, desastres naturales y crisis sociales, enfocado en coordinar y monitorear diferentes áreas de suma importancia como la logística, inventario,
 manejo de donaciones, entre otros, reemplazando totalmente el uso manual y anticuado del sistema actual.<br>
 <br>
