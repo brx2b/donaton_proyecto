@@ -27,6 +27,23 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioGuardado); //si es ok 200 se guarda el usuario luego de las validaciones
     }
 
+    @PostMapping("/login") //Post para login de usuario
+    public ResponseEntity<?> loginUsuario(@RequestBody UsuarioModel loginData){
+        try {
+            // Buscar usuario por nombre
+            List<UsuarioModel> usuarios = repo.findAll();
+            for (UsuarioModel usuario : usuarios) {
+                if (usuario.getNombre().equals(loginData.getNombre()) &&
+                    usuario.getPassword().equals(loginData.getPassword())) {
+                    return ResponseEntity.ok(usuario); // Login exitoso
+                }
+            }
+            return ResponseEntity.status(401).body("Credenciales incorrectas");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error en el servidor: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}") //obtiene usuario mediante la id única
     public ResponseEntity<UsuarioModel> obtenerPorId(@PathVariable String id){
         Optional<UsuarioModel> usuario = repo.findById(id);
