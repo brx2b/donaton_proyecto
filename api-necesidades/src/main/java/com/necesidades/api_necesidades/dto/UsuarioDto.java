@@ -9,4 +9,5 @@ public class UsuarioDto {
     private String email;
     private String rol;
     private String ubicacion;
+    private String contraseña;
 }

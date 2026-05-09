@@ -18,4 +18,6 @@ public class UsuarioModel {
     private String email;
     private String rol;
     private String ubicacion;
+    @NotBlank(message = "El contraseña no puede estar vacío")
+    private String password;
 }
