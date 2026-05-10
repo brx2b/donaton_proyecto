@@ -1,13 +1,15 @@
-name: CI/CD Backend - Docker Compose
+name: CI/CD Backend - Microservicios Spring Boot
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
     paths:
       - "backend/**"
+      - "docker-compose.yml"
+  workflow_dispatch:
 
 jobs:
-  deploy-backend:
+  build-and-push-backend:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +25,34 @@ jobs:
 
       - name: Login a Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
 
-      - name: Build y Push servicios del Backend
+      - name: Build y Push de todos los microservicios a ECR
         run: |
           cd backend
-          # Build de cada servicio definido en docker-compose
-          docker compose build
+          
+          echo " Construyendo y subiendo imágenes a ECR..."
+          
+          # Usamos las variables de entorno para que docker compose sepa dónde subir
+          ECR_REGISTRY=${{ secrets.ECR_REGISTRY }} \
+          docker compose build --no-cache
+          
+          ECR_REGISTRY=${{ secrets.ECR_REGISTRY }} \
           docker compose push
+
+      - name: Desplegar en EC2 vía AWS SSM
+        run: |
+          aws ssm send-command \
+            --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
+            --document-name "AWS-RunShellScript" \
+            --comment "Actualizar Backend Microservicios desde ECR" \
+            --parameters '{"commands":[
+              "set -e",
+              "cd /home/ubuntu/backend || true",
+              "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
+              "docker compose pull",
+              "docker compose down",
+              "docker compose up -d",
+              "echo \"$(date) - Backend actualizado correctamente\" >> deploy.log"
+            ]}' \
+            --output text
