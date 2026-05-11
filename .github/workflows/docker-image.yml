@@ -1,55 +1,67 @@
-name: CI/CD Frontend - Donaton
+name: Deploy Backend Donaton
 
 on:
   push:
     branches: [ "main", "master" ]
     paths:
-      - "frontend/**"          # Solo se activa si hay cambios en la carpeta frontend
-  workflow_dispatch:           # Permite ejecutar manualmente
+      - "api-**/**"
+      - "eureka/**"
+      - "gateway/**"
+      - "docker-compose.yml"
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy-frontend:
+  build-push-deploy:
     runs-on: ubuntu-latest
+    strategy:
+      # Lista de carpetas que coinciden con tus nombres de ECR
+      matrix:
+        service: [api-donaciones, api-gateway, api-inventario, api-logistica, api-necesidades, api-usuarios, eureka]
 
     steps:
-      - name: Checkout código
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configurar credenciales AWS
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login a Amazon ECR
+      - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build y Push Frontend a ECR
+      - name: Build and Push
         run: |
-          echo "Construyendo imagen del Frontend..."
-          cd frontend
-          
-          docker build -t frontdonaton .
-          
-          echo "Subiendo imagen a ECR..."
-          docker tag frontdonaton:latest ${{ secrets.ECR_REGISTRY }}/frontDonaton:latest
-          docker push ${{ secrets.ECR_REGISTRY }}/frontDonaton:latest
+          IMAGE_URI="${{ secrets.ECR_REGISTRY }}/${{ matrix.service }}:latest"
+          echo "Construyendo ${{ matrix.service }}..."
+          cd ${{ matrix.service }}
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
 
-      - name: Desplegar Frontend en EC2 vía SSM
+  trigger-ssm-deploy:
+    needs: build-push-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Execute Remote Deploy via SSM
         run: |
           aws ssm send-command \
             --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
             --document-name "AWS-RunShellScript" \
-            --comment "Actualizar Frontend Donaton" \
+            --comment "Actualizando backend en EC2 Privada" \
             --parameters '{"commands":[
               "set -e",
-              "cd /home/ubuntu/frontend || true",
+              "cd /home/ec2-user",
               "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
-              "docker pull ${{ secrets.ECR_REGISTRY }}/frontDonaton:latest",
-              "docker stop frontdonaton || true",
-              "docker rm frontdonaton || true",
-              "docker run -d --name frontdonaton -p 3000:80 ${{ secrets.ECR_REGISTRY }}/frontDonaton:latest",
-              "echo \"$(date) - Frontend actualizado correctamente\" >> deploy.log"
-            ]}' \
-            --output text
+              "docker-compose pull",
+              "docker-compose up -d",
+              "docker image prune -f"
+            ]}'
