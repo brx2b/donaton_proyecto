@@ -14,9 +14,23 @@ jobs:
   build-push-deploy:
     runs-on: ubuntu-latest
     strategy:
-      # Lista de carpetas que coinciden con tus nombres de ECR
       matrix:
-        service: [api-donaciones, api-gateway, api-inventario, api-logistica, api-necesidades, api-usuarios, eureka]
+        # Ajustado: 'gateway' es el nombre de tu carpeta, 'api-gateway' es el de ECR
+        include:
+          - folder: api-donaciones
+            repo: api-donaciones
+          - folder: gateway
+            repo: api-gateway
+          - folder: api-inventario
+            repo: api-inventario
+          - folder: api-logistica
+            repo: api-logistica
+          - folder: api-necesidades
+            repo: api-necesidades
+          - folder: api-usuarios
+            repo: api-usuarios
+          - folder: eureka
+            repo: eureka
 
     steps:
       - name: Checkout
@@ -27,6 +41,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -34,9 +49,9 @@ jobs:
 
       - name: Build and Push
         run: |
-          IMAGE_URI="${{ secrets.ECR_REGISTRY }}/${{ matrix.service }}:latest"
-          echo "Construyendo ${{ matrix.service }}..."
-          cd ${{ matrix.service }}
+          IMAGE_URI="${{ secrets.ECR_REGISTRY }}/${{ matrix.repo }}:latest"
+          echo "🚀 Construyendo desde carpeta: ${{ matrix.folder }} para el repo: ${{ matrix.repo }}"
+          cd ${{ matrix.folder }}
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
 
@@ -49,6 +64,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Execute Remote Deploy via SSM
@@ -64,4 +80,5 @@ jobs:
               "docker-compose pull",
               "docker-compose up -d",
               "docker image prune -f"
-            ]}'
+            ]}' \
+            --output text
