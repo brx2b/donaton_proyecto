@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # Ajustado: 'gateway' es el nombre de tu carpeta, 'api-gateway' es el de ECR
         include:
           - folder: api-donaciones
             repo: api-donaciones
@@ -36,6 +35,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 1. Configurar Java para compilar los microservicios
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # 2. Generar el archivo .jar (Crea la carpeta /target que Docker necesita)
+      - name: Build JAR with Maven
+        run: |
+          echo "🔨 Compilando el proyecto en ${{ matrix.folder }}..."
+          cd ${{ matrix.folder }}
+          mvn clean package -DskipTests
+
+      # 3. Configurar credenciales de AWS (Incluyendo el Session Token)
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -47,10 +62,11 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      # 4. Construir y subir la imagen ahora que el JAR existe
       - name: Build and Push
         run: |
           IMAGE_URI="${{ secrets.ECR_REGISTRY }}/${{ matrix.repo }}:latest"
-          echo "🚀 Construyendo desde carpeta: ${{ matrix.folder }} para el repo: ${{ matrix.repo }}"
+          echo "🚀 Construyendo imagen para el repo: ${{ matrix.repo }}"
           cd ${{ matrix.folder }}
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
