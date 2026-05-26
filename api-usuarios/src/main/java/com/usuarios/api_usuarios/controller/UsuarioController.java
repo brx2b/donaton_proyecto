@@ -1,7 +1,7 @@
 package com.usuarios.api_usuarios.controller;
 import java.util.List;
 import java.util.Optional;
-
+import com.usuarios.api_usuarios.JWT.JwtUtil;
 import com.usuarios.api_usuarios.model.UsuarioModel;
 import com.usuarios.api_usuarios.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,9 @@ public class UsuarioController {
             for (UsuarioModel usuario : usuarios) {
                 if (usuario.getNombre().equals(loginData.getNombre()) &&
                     usuario.getPassword().equals(loginData.getPassword())) {
+                    JwtUtil.generarToken(usuario.getNombre);
                     return ResponseEntity.ok(usuario); // Login exitoso
+                    
                 }
             }
             return ResponseEntity.status(401).body("Credenciales incorrectas");
