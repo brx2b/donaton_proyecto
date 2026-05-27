@@ -2,7 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -16,13 +15,6 @@
         <module name="gateway" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="donaciones" target="17" />
-      <module name="inventario" target="17" />
-      <module name="logistica" target="17" />
-      <module name="necesidades" target="17" />
-      <module name="usuarios" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -31,13 +23,8 @@
       <module name="api-logistica" options="-parameters" />
       <module name="api-necesidades" options="-parameters" />
       <module name="api-usuarios" options="-parameters" />
-      <module name="donaciones" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="gateway" options="-parameters" />
-      <module name="inventario" options="-parameters" />
-      <module name="logistica" options="-parameters" />
-      <module name="necesidades" options="-parameters" />
-      <module name="usuarios" options="-parameters" />
     </option>
   </component>
 </project>

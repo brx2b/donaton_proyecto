@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//define clase como controller
 @RestController
 @RequestMapping("/donaciones") //endpoint principal GET
 public class DonacionesController {
@@ -28,17 +28,19 @@ public class DonacionesController {
     @GetMapping
     public List<DonacionesModel> listarDonaciones(){
         return repo.findAll();
-    }
-
+    }  //GET de las donaciones
+    //Circuitbreaker con metodo en caso de muchas solicitudes fallidas (application.yml configuración usuariosCB)
     @CircuitBreaker(name ="usuariosCB",fallbackMethod = "fallbackUsuarios")
+    //Endpoint POST para registrar nueva donacion en la BD
     @PostMapping("/donar")
+    //Valida los campos ingresador para registrar con @Valid dentro del modelo
     public ResponseEntity<?> registrarDonacion(@Valid @RequestBody DonacionesModel nuevaDonacion){
         try{
             usuarioClient.obtenerUsuario(nuevaDonacion.getUsuarioId()); //valida si existe el user
             DonacionesProcesador procesador= factory.getProcesador(nuevaDonacion.getTipo());
 
             procesador.procesar(nuevaDonacion);
-            return ResponseEntity.ok(repo.save(nuevaDonacion));
+            return ResponseEntity.ok(repo.save(nuevaDonacion)); //si responde 200 se guarda
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(400).body("Error en el tipo de donacion "+e.getMessage());
         }
@@ -47,11 +49,13 @@ public class DonacionesController {
                     + nuevaDonacion.getUsuarioId()+" "+e.getMessage());
         }
     }
+    //Fallback de circuitbreaker al fallar la nueva donacion
     public ResponseEntity<?> fallbackUsuarios(DonacionesModel nuevaDonacion,Exception e){
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Error interno");
     }
+    //Endpoint para eliminar donacion mediante la id
     @DeleteMapping("{id}")
-    public ResponseEntity<?> eliminarDonacion(@PathVariable String id){
+    public ResponseEntity<?> eliminarDonacion(@PathVariable String id){ //recibe el id
         try{
             repo.deleteById(id);
             return ResponseEntity.ok("Se ha eliminado correctamente la donacion");
