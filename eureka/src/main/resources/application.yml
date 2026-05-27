@@ -1,9 +1,9 @@
 server:
-  port: 8761
+  port: 8761 #puerto por defecto de eureka
 
 spring:
   application:
-    name: eureka-server
+    name: eureka-server #el nombre del servicio
 
 eureka:
   client:

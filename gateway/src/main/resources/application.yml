@@ -1,14 +1,14 @@
 server:
-  port: 8086
+  port: 8086 #Puerto del gateway
 
 spring:
   application:
-    name: ms-gateway
+    name: ms-gateway #Nombre a mostrar
   cloud:
       gateway:
         server:
           webmvc:
-            routes:
+            routes: #direcciones de los demas microservicios con sus nombres
               - id: ruta-usuarios
                 uri: lb://ms-usuarios
                 predicates:
@@ -47,4 +47,4 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/ #Ubica donde se aloja eureka para mostrar el servicio

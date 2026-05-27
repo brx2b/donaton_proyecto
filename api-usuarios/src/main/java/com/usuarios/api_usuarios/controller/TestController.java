@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+//endpoint para probar simplemente la conex a la BD de mongoDB
 @RequestMapping("/test")
 public class TestController {
     @Autowired
