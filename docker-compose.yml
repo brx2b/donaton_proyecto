@@ -3,77 +3,70 @@ version: '3.8'
 services:
 
   eureka-server:
-    image: ${ECR_REGISTRY}/eureka:latest          # Para ECR
+    image: donaton_proyecto-api-eureka:latest          # Para ECR
     build: ./eureka
     ports:
       - "8761:8761"
-    restart: unless-stopped
     networks:
       - backend-network
 
   ms-usuarios:
-    image: ${ECR_REGISTRY}/api-usuarios:latest
+    image: donaton_proyecto-api-usuarios:latest
     build: ./api-usuarios
     ports:
       - "8081:8081"
     depends_on:
       - eureka-server
-    restart: unless-stopped
     networks:
       - backend-network
 
   ms-donaciones:
-    image: ${ECR_REGISTRY}/api-donaciones:latest
+    image: donaton_proyecto-api-donaciones:latest
     build: ./api-donaciones
     ports:
       - "8082:8082"
     depends_on:
       - eureka-server
-    restart: unless-stopped
     networks:
       - backend-network
 
   ms-inventario:
-    image: ${ECR_REGISTRY}/api-inventario:latest
+    image: donaton_proyecto-api-inventario:latest
     build: ./api-inventario
     ports:
       - "8083:8083"
     depends_on:
       - eureka-server
-    restart: unless-stopped
     networks:
       - backend-network
 
   ms-logistica:
-    image: ${ECR_REGISTRY}/api-logistica:latest
+    image: donaton_proyecto-api-logistica:latest
     build: ./api-logistica
     ports:
       - "8084:8084"
     depends_on:
       - eureka-server
-    restart: unless-stopped
     networks:
       - backend-network
 
   ms-necesidades:
-    image: ${ECR_REGISTRY}/api-necesidades:latest
+    image: donaton_proyecto-api-necesidades:latest
     build: ./api-necesidades
     ports:
       - "8085:8085"
     depends_on:
       - eureka-server
-    restart: unless-stopped
     networks:
       - backend-network
 
   api-gateway:
-    image: ${ECR_REGISTRY}/api-gateway:latest
+    image: donaton_proyecto-api-gateway:latest
     build: ./gateway
     ports:
       - "8086:8086"
     depends_on:
       - eureka-server
-    restart: unless-stopped
     networks:
       - backend-network
 

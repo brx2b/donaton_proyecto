@@ -39,7 +39,7 @@ public class UsuarioController {
             for (UsuarioModel usuario : usuarios) {
                 if (usuario.getNombre().equals(loginData.getNombre()) &&
                     usuario.getPassword().equals(loginData.getPassword())) {
-                    JwtUtil.generarToken(usuario.getNombre);
+                    JwtUtil.generarToken(usuario.getNombre());
                     return ResponseEntity.ok(usuario); // Login exitoso
                     
                 }
