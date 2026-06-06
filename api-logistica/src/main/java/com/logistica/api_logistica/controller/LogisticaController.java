@@ -45,9 +45,20 @@ public class LogisticaController {
             return ResponseEntity.ok("Ha ocurrido un problema = "+e.getMessage());
         }
     }
+    //Endpoint para eliminar logistica mediante el id del envío
+    @DeleteMapping("/{id}")
+    private ResponseEntity<?> eliminarEncargoId(@PathVariable String id){ //obtiene el id
+        try {
+            repo.deleteById(id); //si lo encuentra lo elimina completamente
+            return ResponseEntity.ok("Envío eliminado");
+        }catch (Exception e){
+            return ResponseEntity.status(404).body("No se encontro envío con id "+id);
+        }
+    }
+
     //Endpoint para eliminar logistica mediante la matricula del vehiculo (al marcar llegada al destino)
-    @DeleteMapping("/{matricula}")
-    public ResponseEntity<?> eliminarEncargo(@PathVariable String matricula){ //recibe la matricula como entrada
+    @DeleteMapping("/matricula/{matricula}")
+    public ResponseEntity<?> eliminarEncargoPorMatricula(@PathVariable String matricula){ //recibe la matricula como entrada
         try{
             String matri = matricula.toUpperCase(); //Convierte el texto a mayus
             if(!repo.existsByMatricula(matri)){
