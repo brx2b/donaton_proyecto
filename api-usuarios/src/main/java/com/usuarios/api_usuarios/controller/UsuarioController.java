@@ -3,9 +3,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import com.usuarios.api_usuarios.JWT.JwtUtil;
 import com.usuarios.api_usuarios.model.UsuarioModel;
 import com.usuarios.api_usuarios.repository.UsuarioRepository;
+import com.usuarios.api_usuarios.DTO.LoginRespuesta;
+import com.usuarios.api_usuarios.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioRepository repo;
+
+    private final UsuarioRepository repo;
+    private final JwtService jwtService;
+
+    public UsuarioController(UsuarioRepository repo,JwtService jwtService){
+        this.repo=repo;
+        this.jwtService=jwtService;
+    }
 
     //Get devuelve todos los usuarios
     @GetMapping
@@ -47,14 +54,16 @@ public class UsuarioController {
             for (UsuarioModel usuario : usuarios) {
                 if (usuario.getNombre().equals(loginData.getNombre()) &&
                     usuario.getPassword().equals(loginData.getPassword())) {
-                    JwtUtil.generarToken(usuario.getNombre());
-                    return ResponseEntity.ok(usuario); // Login exitoso
+                    String token= jwtService.generarToken(usuario.getNombre()); //crear el token
+                    LoginRespuesta respuesta=new LoginRespuesta(token,usuario.getNombre()); //guarda la respuesta con el token
+                    return ResponseEntity.ok(respuesta); // Login exitoso y muestra el token generado
                     
                 }
             }
-            return ResponseEntity.status(401).body("Credenciales incorrectas");
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error en el servidor: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en el servidor: " + e.getMessage());
         }
     }
     //obtiene usuario mediante la id única
