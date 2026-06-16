@@ -55,7 +55,7 @@ public class UsuarioController {
                 if (usuario.getNombre().equals(loginData.getNombre()) &&
                     usuario.getPassword().equals(loginData.getPassword())) {
                     String token= jwtService.generarToken(usuario.getNombre()); //crear el token
-                    LoginRespuesta respuesta=new LoginRespuesta(token,usuario.getNombre()); //guarda la respuesta con el token
+                    LoginRespuesta respuesta=new LoginRespuesta(token,usuario.getNombre(),usuario.getRol(),usuario.getId()); //guarda la respuesta con el token
                     return ResponseEntity.ok(respuesta); // Login exitoso y muestra el token generado
                     
                 }
