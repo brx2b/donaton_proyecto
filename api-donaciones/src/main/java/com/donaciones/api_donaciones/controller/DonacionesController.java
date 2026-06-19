@@ -34,8 +34,17 @@ public class DonacionesController {
     //Endpoint POST para registrar nueva donacion en la BD
     @PostMapping("/donar")
     //Valida los campos ingresador para registrar con @Valid dentro del modelo
-    public ResponseEntity<?> registrarDonacion(@Valid @RequestBody DonacionesModel nuevaDonacion){
+    public ResponseEntity<?> registrarDonacion(
+            @Valid @RequestBody DonacionesModel nuevaDonacion,
+            @org.springframework.web.bind.annotation.RequestHeader(value = "Authorization", required = false) String authHeader
+    ){
         try{
+            // Pasar el token a través de ThreadLocal para que el Feign interceptor lo pueda acceder
+            if (authHeader != null) {
+                com.donaciones.api_donaciones.config.FeignConfiguration.setAuthorizationToken(authHeader);
+                System.out.println("📤 [DonacionesController] Token guardado en ThreadLocal: " + authHeader.substring(0, Math.min(authHeader.length(), 20)) + "...");
+            }
+            
             usuarioClient.obtenerUsuario(nuevaDonacion.getUsuarioId()); //valida si existe el user
             DonacionesProcesador procesador= factory.getProcesador(nuevaDonacion.getTipo());
 
@@ -47,6 +56,10 @@ public class DonacionesController {
         catch(Exception e){
             return ResponseEntity.status(404).body("error usuario con id "
                     + nuevaDonacion.getUsuarioId()+" "+e.getMessage());
+        }
+        finally {
+            // Limpiar el ThreadLocal después de usar
+            com.donaciones.api_donaciones.config.FeignConfiguration.clearAuthorizationToken();
         }
     }
     //Fallback de circuitbreaker al fallar la nueva donacion
