@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: ms-gateway #Nombre a mostrar
+    name: api-gateway #Nombre a mostrar
   cloud:
     gateway:
       routes: #direcciones de los demas microservicios con sus nombres
