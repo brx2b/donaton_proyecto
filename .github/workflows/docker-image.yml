@@ -45,7 +45,7 @@ jobs:
 
       - name: Build JAR
         run: |
-          echo "🔨 Compilando el proyecto en ${{ matrix.folder }}..."
+          echo "Compilando el proyecto en ${{ matrix.folder }}..."
           cd ${{ matrix.folder }}
           mvn clean package -DskipTests
 
@@ -62,8 +62,8 @@ jobs:
 
       - name: Build y Push
         run: |
-          IMAGE_URI="${{ secrets.ECR_REGISTRY }}/donaton_proyecto/${{ matrix.repo }}:latest"
-          echo "🚀 Construyendo imagen para el repo: donaton_proyecto/${{ matrix.repo }}"
+          IMAGE_URI="${{ secrets.ECR_REGISTRY }}/donatonback/${{ matrix.repo }}:latest"
+          echo "Construyendo imagen para el repo: donatonback/${{ matrix.repo }}"
           cd ${{ matrix.folder }}
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
@@ -90,7 +90,7 @@ jobs:
               "set -e",
               "cd /home/ec2-user",
               "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
-              "export ECR_REGISTRY=${{ secrets.ECR_REGISTRY }}/donaton_proyecto",
+              "export ECR_REGISTRY=${{ secrets.ECR_REGISTRY }}/donatonback",
               "docker compose pull",
               "docker compose up -d",
               "docker image prune -f"
