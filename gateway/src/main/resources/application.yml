@@ -8,7 +8,7 @@ spring:
     gateway:
       routes: #direcciones de los demas microservicios con sus nombres
         - id: ruta-usuarios
-          uri: lb://ms-usuarios
+          uri: lb://MS-USUARIOS
           predicates:
             - Path=/usuarios,/usuarios/**
           filters:
