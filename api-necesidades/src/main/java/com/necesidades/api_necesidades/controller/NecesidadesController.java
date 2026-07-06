@@ -36,20 +36,20 @@ public class NecesidadesController {
             //verifica si existe el id del usuario para realizar el POST
             usuarioClient.obtenerUsuario(nuevaNecesidad.getUsuarioId());
             return ResponseEntity.ok(repo.save(nuevaNecesidad)); //si existe lo guarda
-        } catch (Exception e) {
-            //corta el error para que sea más legible y realizar las verificaciones especificas de los codigos del error solamente
-            String error = e.getMessage().substring(1,4);
-            //si el error es 404 muestra el mensaje
-            if(error.equals("404")){
+        } catch (FeignException e) {
+            if (e.status() == 404) {
                 return ResponseEntity.status(404).body("Usuario no encontrado con id: "+nuevaNecesidad.getUsuarioId());
             }
-            //si el error es 400 muestra el mensaje
-            if(error.equals("400")){
+            if (e.status() == 403) {
+                return ResponseEntity.status(403).body("Acceso denegado al servicio de usuarios");
+            }
+            if (e.status() == 400) {
                 return ResponseEntity.status(400).body("Completa los campos obligatorios");
             }
+            return ResponseEntity.status(e.status() <= 0 ? 500 : e.status()).body("Error de comunicación con usuarios: " + e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(500).body("error del servidor");
         }
-
 
     }
     //endpoint que recibe el id para eliminar la necesidad
