@@ -6,12 +6,12 @@ spring:
     name: ms-necesidades
   data:
     redis:
-      host: localhost
+      host: redis
       port: 6379
   cache:
     type: redis
     redis:
-      time-to-live: 10m  # El caché se destruye automáticamente cada 10 minutos
+      time-to-live: 10m #cache de destruye cada 10 minutos
       cache-null-values: false
 eureka:
   client:
