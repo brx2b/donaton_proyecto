@@ -1,11 +1,15 @@
 package com.necesidades.api_necesidades.model;
+import com.netflix.discovery.provider.ISerializer;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
+
 @Document(collection = "necesidades")
 @Data
-public class NecesidadesModel {
+public class NecesidadesModel implements Serializable {
     @Id
     private String id;
     private String usuarioId;
