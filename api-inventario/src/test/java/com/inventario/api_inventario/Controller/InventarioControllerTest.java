@@ -41,15 +41,9 @@ public class InventarioControllerTest {
         inventarioEjemplo = new InventarioModel();
         inventarioEjemplo.setId("inv123");
         inventarioEjemplo.setSede("Puerto Montt");
-
-        // 💡 NOTA DE SEGURIDAD: Si tu InventarioModel tiene una lista interna de elementos
-        // o campos con @NotBlank (como 'productos', 'cantidad', etc.), asegúrate de
-        // inicializarlos aquí para evitar que el validador @Valid te lance un HTTP 400.
     }
 
-    // ==========================================
     // TESTS PARA GET (Listar y Filtrar)
-    // ==========================================
     @Test
     void listarInventario_DeberiaDevolverLista() throws Exception {
         when(repo.findAll()).thenReturn(Collections.singletonList(inventarioEjemplo));
@@ -71,9 +65,7 @@ public class InventarioControllerTest {
                 .andExpect(jsonPath("$[0].sede").value("Puerto Montt"));
     }
 
-    // ==========================================
     // TESTS PARA POST (Registrar Inventario)
-    // ==========================================
     @Test
     void registrarInventario_Exitoso_DeberiaGuardar() throws Exception {
         when(repo.findBySede("Puerto Montt")).thenReturn(new ArrayList<>());
@@ -110,9 +102,7 @@ public class InventarioControllerTest {
                 .andExpect(content().string("Ocurrió un problema verifica los campos"));
     }
 
-    // ==========================================
     // TESTS PARA DELETE (Eliminar por ID)
-    // ==========================================
     @Test
     void eliminarInventario_Exitoso_DeberiaDar200() throws Exception {
         mockMvc.perform(delete("/inventario/inv123"))
