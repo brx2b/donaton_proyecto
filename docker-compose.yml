@@ -1,7 +1,13 @@
 version: '3.8'
 
 services:
-
+  redis:
+    image: redis:alpine
+    container_name: contenedor-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - backend-network
   eureka-server:
     image: ${ECR_REGISTRY:-donatonback}/eureka-server:latest          # Para ECR
     build: ./eureka
@@ -55,8 +61,12 @@ services:
     build: ./api-necesidades
     ports:
       - "8085:8085"
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
     depends_on:
       - eureka-server
+      - redis
     networks:
       - backend-network
 
