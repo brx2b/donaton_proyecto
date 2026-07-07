@@ -4,7 +4,15 @@ server:
 spring:
   application:
     name: ms-necesidades
-
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: redis
+    redis:
+      time-to-live: 10m  # El caché se destruye automáticamente cada 10 minutos
+      cache-null-values: false
 eureka:
   client:
     service-url:
