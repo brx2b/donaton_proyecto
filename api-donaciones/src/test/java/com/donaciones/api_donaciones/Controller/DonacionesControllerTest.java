@@ -22,16 +22,16 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DonacionesController.class)
+@WebMvcTest(DonacionesController.class) //Configura un entorno de prueba aislado que levanta exclusivamente la capa web
 public class DonacionesControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mockMvc; //simula peticiones http hacia el controlador sin necesidad de iniciar un servidor real
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper; //mientras que el segundo transforma los objetos Java a formato JSON
 
-    @MockitoBean
+    @MockitoBean //remplaza dependencias reales por mocks, permitiendo controlar su comportamiento durante las pruebas
     private DonacionesRepository repo;
 
     @MockitoBean
@@ -45,7 +45,7 @@ public class DonacionesControllerTest {
 
     private DonacionesModel donacionEjemplo;
 
-    @BeforeEach
+    @BeforeEach //Ejecuta el método setUp() antes de cada test para reiniciar donacionEjemplo con datos limpios, asegurando que cada prueba comience siempre desde el mismo escenario base.
     void setUp() {
         donacionEjemplo = new DonacionesModel();
         donacionEjemplo.setId("donacion999");
@@ -54,9 +54,7 @@ public class DonacionesControllerTest {
         donacionEjemplo.setMonto(15000.0);
         donacionEjemplo.setFecha("2026-07-06");
     }
-    // ==========================================
     // TEST PARA GET (Listar donaciones)
-    // ==========================================
     @Test
     void listarDonaciones_DeberiaDevolverLista() throws Exception {
         when(repo.findAll()).thenReturn(Collections.singletonList(donacionEjemplo));
@@ -66,14 +64,11 @@ public class DonacionesControllerTest {
                 .andExpect(jsonPath("$[0].id").value("donacion999"))
                 .andExpect(jsonPath("$[0].tipo").value("MONETARIA"));
     }
-
-    // ==========================================
     // TESTS PARA POST (Registrar Donación con Seguridad y Factory)
-    // ==========================================
     @Test
     void registrarDonacion_Exitoso_DeberiaGuardar() throws Exception {
         // Mockear comportamiento de Feign Client y Factory dinámica
-        when(usuarioClient.obtenerUsuario("user123")).thenReturn(null); // Asumiendo que devuelve void o un objeto genérico
+        when(usuarioClient.obtenerUsuario("user123")).thenReturn(null); 
         when(factory.getProcesador("MONETARIA")).thenReturn(procesador);
         doNothing().when(procesador).procesar(any(DonacionesModel.class));
         when(repo.save(any(DonacionesModel.class))).thenReturn(donacionEjemplo);
@@ -110,17 +105,10 @@ public class DonacionesControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("error usuario con id user123 No existe"));
     }
-
-    // ==========================================
     // TEST PARA CIRCUIT BREAKER (Fallback)
-    // ==========================================
     @Test
     void registrarDonacion_CircuitBreaker_DeberiaRetornarFallback() throws Exception {
-        // En un entorno @WebMvcTest el CircuitBreaker no se activa automáticamente por excepciones comunes,
-        // pero podemos probar directamente la respuesta del método fallback disparándolo simuladamente.
-        // Sin embargo, para forzar que Resilience4j actúe en pruebas unitarias si está activo, o validar el método directamente:
 
-        // Esta prueba asegura el contrato exacto de lo que tu método 'fallbackUsuarios' retorna.
         mockMvc.perform(post("/donaciones/donar")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(donacionEjemplo)))
@@ -130,13 +118,9 @@ public class DonacionesControllerTest {
                     // El fallback retorna un HTTP 503 SERVICE_UNAVAILABLE según tu código
                 });
 
-        // Alternativamente, forzamos un disparo que salte los bloques anteriores si es interceptado
         when(usuarioClient.obtenerUsuario("user123")).thenThrow(new RuntimeException("Servicio Caído"));
     }
 
-    // ==========================================
-    // TESTS PARA DELETE (Eliminar Donación)
-    // ==========================================
     @Test
     void eliminarDonacion_Exitoso_DeberiaDar200() throws Exception {
         mockMvc.perform(delete("/donaciones/donacion999"))

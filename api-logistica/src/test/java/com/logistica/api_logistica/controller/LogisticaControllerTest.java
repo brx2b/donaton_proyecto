@@ -58,9 +58,7 @@ public class LogisticaControllerTest {
         viajeEjemplo.setCarga(listaCarga); // Pasamos la lista que creamos arriba
     }
 
-    // ==========================================
     // TESTS PARA GET (Listar y Buscar)
-    // ==========================================
     @Test
     void listarLogistica_DeberiaDevolverLista() throws Exception {
         when(repo.findAll()).thenReturn(Collections.singletonList(viajeEjemplo));
@@ -80,9 +78,7 @@ public class LogisticaControllerTest {
                 .andExpect(jsonPath("$.id").value("100"));
     }
 
-    // ==========================================
     // TESTS PARA POST (Registrar Logística)
-    // ==========================================
     @Test
     void registrarLogistica_Exitoso_DeberiaGuardar() throws Exception {
         // Si la búsqueda por matrícula retorna vacío, se puede registrar
@@ -121,9 +117,7 @@ public class LogisticaControllerTest {
                 .andExpect(content().string("Ha ocurrido un problema = Simulado"));
     }
 
-    // ==========================================
     // TESTS PARA DELETE POR ID
-    // ==========================================
     @Test
     void eliminarEncargoId_Exitoso() throws Exception {
         mockMvc.perform(delete("/logistica/100"))
@@ -141,9 +135,7 @@ public class LogisticaControllerTest {
                 .andExpect(content().string("No se encontro envío con id 100"));
     }
 
-    // ==========================================
     // TESTS PARA DELETE POR MATRÍCULA
-    // ==========================================
     @Test
     void eliminarEncargoPorMatricula_Exitoso() throws Exception {
         when(repo.existsByMatricula("AA-BB-11")).thenReturn(true);

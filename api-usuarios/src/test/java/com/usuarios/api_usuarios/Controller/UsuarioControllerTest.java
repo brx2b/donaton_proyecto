@@ -50,13 +50,9 @@ public class UsuarioControllerTest {
         usuarioEjemplo.setEmail("brian@correo.com");
         usuarioEjemplo.setRol("ADMIN");
 
-        // 💡 NOTA: Si tu UsuarioModel tiene más campos obligatorios con validaciones (@NotBlank),
-        // inicialízalos aquí igual que hicimos con los microservicios anteriores.
     }
 
-    // ==========================================
     // TESTS PARA GET (Listar todos)
-    // ==========================================
     @Test
     void listarUsuarios_DeberiaDevolverLista() throws Exception {
         when(repo.findAll()).thenReturn(Collections.singletonList(usuarioEjemplo));
@@ -67,9 +63,7 @@ public class UsuarioControllerTest {
                 .andExpect(jsonPath("$[0].nombre").value("Brian"));
     }
 
-    // ==========================================
     // TESTS PARA POST (Crear Usuario)
-    // ==========================================
     @Test
     void crearUsuario_Exitoso_DeberiaGuardar() throws Exception {
         when(repo.existsByEmail("brian@correo.com")).thenReturn(false);
@@ -93,9 +87,7 @@ public class UsuarioControllerTest {
                 .andExpect(status().isConflict()); // Valida HTTP 409 Conflict
     }
 
-    // ==========================================
     // TESTS PARA POST (Login de Usuario)
-    // ==========================================
     @Test
     void loginUsuario_Exitoso_DeberiaRetornarToken() throws Exception {
         when(repo.findAll()).thenReturn(Collections.singletonList(usuarioEjemplo));
@@ -139,9 +131,7 @@ public class UsuarioControllerTest {
                 .andExpect(content().string("Error en el servidor: Error fatal"));
     }
 
-    // ==========================================
     // TESTS PARA GET BY ID
-    // ==========================================
     @Test
     void obtenerPorId_Existe_DeberiaDar200() throws Exception {
         when(repo.findById("user123")).thenReturn(Optional.of(usuarioEjemplo));
@@ -159,9 +149,7 @@ public class UsuarioControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ==========================================
     // TESTS PARA DELETE
-    // ==========================================
     @Test
     void eliminarPorId_Exitoso_DeberiaDar200() throws Exception {
         mockMvc.perform(delete("/usuarios/user123"))

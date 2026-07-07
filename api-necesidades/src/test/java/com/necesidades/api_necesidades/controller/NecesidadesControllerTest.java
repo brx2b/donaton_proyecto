@@ -30,9 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@WebMvcTest(NecesidadesController.class)
-@Import(TestCacheConfiguration.class)
-@TestPropertySource(properties = {
+@WebMvcTest(NecesidadesController.class)//Levanta de forma aislada únicamente la capa web para probar NecesidadesController
+@Import(TestCacheConfiguration.class) //para aplicar una configuración de caché específica y controlada para el entorno de pruebas.
+@TestPropertySource(properties = { //Modifica las propiedades en tiempo de ejecución para desactivar Eureka
         "eureka.client.enabled=false",
         "spring.data.redis.host=localhost",
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration"
@@ -45,7 +45,6 @@ public class NecesidadesControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // REEMPLAZADO: Ahora mockeamos el servicio que tiene la lógica de Redis, no el repo.
     @MockitoBean
     private NecesidadesService necesidadesService;
 
@@ -63,23 +62,18 @@ public class NecesidadesControllerTest {
         necesidadEjemplo.setSede("Puerto Montt");
     }
 
-    // ==========================================
     // TEST PARA GET (Listar)
-    // ==========================================
     @Test
     void listarNecesidades_DeberiaDevolverLista() throws Exception {
-        // Apunta al método del servicio
         when(necesidadesService.listarTodas()).thenReturn(Collections.singletonList(necesidadEjemplo));
 
         mockMvc.perform(get("/necesidades"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("1")) // Eliminado el casteo molesto
+                .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].sede").value("Puerto Montt"));
     }
 
-    // ==========================================
     // TESTS PARA POST (Registrar)
-    // ==========================================
     @Test
     void registrarDonacion_Exitoso_DeberiaDevolver200() throws Exception {
         when(usuarioClient.obtenerUsuario(necesidadEjemplo.getUsuarioId())).thenReturn(null);
@@ -131,9 +125,7 @@ public class NecesidadesControllerTest {
                 .andExpect(content().string("error del servidor"));
     }
 
-    // ==========================================
     // TESTS PARA DELETE (Eliminar)
-    // ==========================================
     @Test
     void eliminarNecesidad_Exitoso_DeberiaDevolver200() throws Exception {
         mockMvc.perform(delete("/necesidades/{id}", "1"))
