@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 //apunta a el servicio en docker ms-usuarios no localhost
 @FeignClient(
         name = "api-gateway",
-        url = "http://api-gateway:8086/usuarios", // Removido /api - endpoint correcto
+        url = "http://api-gateway:8086/usuarios", 
         configuration = com.donaciones.api_donaciones.config.FeignConfiguration.class
 )
 public interface UsuarioCliente {

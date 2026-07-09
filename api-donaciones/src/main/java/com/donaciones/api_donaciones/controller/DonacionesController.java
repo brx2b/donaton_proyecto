@@ -42,7 +42,7 @@ public class DonacionesController {
             // Pasar el token a través de ThreadLocal para que el Feign interceptor lo pueda acceder
             if (authHeader != null) {
                 com.donaciones.api_donaciones.config.FeignConfiguration.setAuthorizationToken(authHeader);
-                System.out.println("📤 [DonacionesController] Token guardado en ThreadLocal: " + authHeader.substring(0, Math.min(authHeader.length(), 20)) + "...");
+                System.out.println("[DonacionesController] Token guardado en ThreadLocal: " + authHeader.substring(0, Math.min(authHeader.length(), 20)) + "...");
             }
             
             usuarioClient.obtenerUsuario(nuevaDonacion.getUsuarioId()); //valida si existe el user

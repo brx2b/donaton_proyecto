@@ -27,12 +27,12 @@ public class FeignConfiguration {
         return new RequestInterceptor() {
             @Override
             public void apply(RequestTemplate requestTemplate) {
-                System.out.println("🔍 [FeignInterceptor] Interceptor activado.");
+                System.out.println("[FeignInterceptor] Interceptor activado.");
 
                 // Primero intenta usar ThreadLocal (pasado explícitamente desde el controller)
                 String token = authorizationToken.get();
                 if (token != null) {
-                    System.out.println("✅ [FeignInterceptor] Token encontrado en ThreadLocal: " + token.substring(0, Math.min(token.length(), 20)) + "...");
+                    System.out.println("[FeignInterceptor] Token encontrado en ThreadLocal: " + token.substring(0, Math.min(token.length(), 20)) + "...");
                     requestTemplate.header("Authorization", token);
                     return;
                 }
@@ -44,16 +44,16 @@ public class FeignConfiguration {
                         HttpServletRequest request = servletAttributes.getRequest();
                         String authHeader = request.getHeader("Authorization");
                         if (authHeader != null) {
-                            System.out.println("✅ [FeignInterceptor] Token encontrado en RequestContextHolder: " + authHeader.substring(0, Math.min(authHeader.length(), 20)) + "...");
+                            System.out.println("[FeignInterceptor] Token encontrado en RequestContextHolder: " + authHeader.substring(0, Math.min(authHeader.length(), 20)) + "...");
                             requestTemplate.header("Authorization", authHeader);
                             return;
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println("⚠️ [FeignInterceptor] No se pudo acceder a RequestContextHolder: " + e.getMessage());
+                    System.out.println("[FeignInterceptor] No se pudo acceder a RequestContextHolder: " + e.getMessage());
                 }
 
-                System.out.println("⚠️ [FeignInterceptor] ALERTA: No se encontró token para propagar.");
+                System.out.println("[FeignInterceptor] ALERTA: No se encontró token para propagar.");
             }
         };
     }
