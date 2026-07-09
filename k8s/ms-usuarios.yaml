@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-usuarios
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-usuarios
+  template:
+    metadata:
+      labels:
+        app: ms-usuarios
+    spec:
+      containers:
+        - name: ms-usuarios
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donatonback/ms-usuarios:latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SERVER_PORT
+              value: "8081"
+            - name: SPRING_APPLICATION_NAME
+              value: "ms-usuarios"
+            - name: EUREKA_URI
+              value: "http://eureka-service:8761/eureka/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-usuarios-service
+spec:
+  selector:
+    app: ms-usuarios
+  ports:
+    - port: 8081
+      targetPort: 8081
+  type: ClusterIP

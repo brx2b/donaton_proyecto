@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-logistica
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-logistica
+  template:
+    metadata:
+      labels:
+        app: ms-logistica
+    spec:
+      containers:
+        - name: ms-logistica
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donatonback/ms-logistica:latest
+          ports:
+            - containerPort: 8084
+          env:
+            - name: SERVER_PORT
+              value: "8084"
+            - name: SPRING_APPLICATION_NAME
+              value: "ms-logistica"
+            - name: EUREKA_URI
+              value: "http://eureka-service:8761/eureka/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-logistica-service
+spec:
+  selector:
+    app: ms-logistica
+  ports:
+    - port: 8084
+      targetPort: 8084
+  type: ClusterIP

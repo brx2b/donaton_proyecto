@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-necesidades
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-necesidades
+  template:
+    metadata:
+      labels:
+        app: ms-necesidades
+    spec:
+      containers:
+        - name: ms-necesidades
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donatonback/ms-necesidades:latest
+          ports:
+            - containerPort: 8085
+          env:
+            - name: SERVER_PORT
+              value: "8085"
+            - name: SPRING_APPLICATION_NAME
+              value: "ms-necesidades"
+            - name: EUREKA_URI
+              value: "http://eureka-service:8761/eureka/"
+            - name: REDIS_HOST
+              value: "redis"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-necesidades-service
+spec:
+  selector:
+    app: ms-necesidades
+  ports:
+    - port: 8085
+      targetPort: 8085
+  type: ClusterIP
