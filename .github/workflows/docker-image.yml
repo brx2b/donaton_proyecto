@@ -95,11 +95,6 @@ jobs:
               "sudo docker pull $IMAGE_URI",
               "sudo docker stop ${{ matrix.repo }} || true",
               "sudo docker rm ${{ matrix.repo }} || true",
-              "sudo docker run -d --name ${{ matrix.repo }} --restart unless-stopped \
-                -p ${{ matrix.port }}:${{ matrix.port }} \
-                -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${{ secrets.EUREKA_PRIVATE_IP }}:8761/eureka/ \
-                -e EUREKA_INSTANCE_PREFER_IP_ADDRESS=true \
-                -e SPRING_DATA_REDIS_HOST=${{ secrets.REDIS_PRIVATE_IP }} \
-                $IMAGE_URI",
+              "sudo docker run -d --name ${{ matrix.repo }} --restart unless-stopped -p ${{ matrix.port }}:${{ matrix.port }} -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${{ secrets.EUREKA_PRIVATE_IP }}:8761/eureka/ -e EUREKA_INSTANCE_PREFER_IP_ADDRESS=true -e SPRING_DATA_REDIS_HOST=${{ secrets.REDIS_PRIVATE_IP }} $IMAGE_URI",
               "sudo docker image prune -f"
             ]}'
