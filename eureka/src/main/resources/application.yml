@@ -1,11 +1,11 @@
 server:
-  port: 8761 #puerto por defecto de eureka
+  port: ${SERVER_PORT:8761}
 
 spring:
   application:
-    name: eureka-server #el nombre del servicio
+    name: ${SPRING_APPLICATION_NAME:eureka-server}
 
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+    register-with-eureka: ${EUREKA_CLIENT_REGISTER_WITH_EUREKA:false}
+    fetch-registry: ${EUREKA_CLIENT_FETCH_REGISTRY:false}
