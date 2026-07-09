@@ -8,6 +8,7 @@ services:
       - "8081:8081"
     environment:
       - EUREKA_URI=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+      - HOST_PRIVATE_IP=${MY_EC2_PRIVATE_IP}
       - SERVER_PORT=8081
       - SPRING_APPLICATION_NAME=ms-usuarios
   ms-donaciones:
