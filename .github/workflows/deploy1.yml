@@ -29,7 +29,12 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - uses: aws-actions/amazon-ecr-login@v2
       - run: |
-          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donatonback/${{ matrix.service }}:latest"
+          # Mapeo de nombres de carpeta a nombres de repositorio en ECR
+          if [ "${{ matrix.service }}" == "eureka" ]; then REPO_NAME="eureka-server";
+          elif [ "${{ matrix.service }}" == "gateway" ]; then REPO_NAME="api-gateway";
+          else REPO_NAME="${{ matrix.service }}"; fi
+
+          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donatonback/$REPO_NAME:latest"
           docker build -t $IMAGE_URI ./${{ matrix.service }}
           docker push $IMAGE_URI
 

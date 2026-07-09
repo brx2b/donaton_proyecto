@@ -30,7 +30,10 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - uses: aws-actions/amazon-ecr-login@v2
       - run: |
-          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donatonback/${{ matrix.service }}:latest"
+          # Mapeo: api- -> ms- (según image_74563c.png)
+          REPO_NAME=$(echo ${{ matrix.service }} | sed 's/api-/ms-/')
+
+          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donatonback/$REPO_NAME:latest"
           docker build -t $IMAGE_URI ./${{ matrix.service }}
           docker push $IMAGE_URI
 
