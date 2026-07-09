@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+  ms-inventario:
+    image: ${ECR_REGISTRY}/donaton/api-inventario:latest
+    container_name: ms-inventario
+    restart: always
+    ports:
+      - "8083:8083"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+  ms-logistica:
+    image: ${ECR_REGISTRY}/donaton/api-logistica:latest
+    container_name: ms-logistica
+    restart: always
+    ports:
+      - "8084:8084"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+  ms-necesidades:
+    image: ${ECR_REGISTRY}/donaton/api-necesidades:latest
+    container_name: ms-necesidades
+    restart: always
+    ports:
+      - "8085:8085"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+      - SPRING_DATA_REDIS_HOST=redis

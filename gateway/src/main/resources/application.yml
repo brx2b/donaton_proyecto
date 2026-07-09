@@ -1,42 +1,42 @@
 server:
-  port: 8086 #Puerto del gateway
+  port: ${SERVER_PORT:8086}
 
 spring:
   application:
-    name: api-gateway #Nombre a mostrar
+    name: ${SPRING_APPLICATION_NAME:api-gateway}
   cloud:
     gateway:
-      routes: #direcciones de los demas microservicios con sus nombres
+      routes:
         - id: ruta-usuarios
-          uri: lb://MS-USUARIOS
+          uri: ${USUARIOS_URI:lb://ms-usuarios}
           predicates:
             - Path=/usuarios,/usuarios/**
           filters:
             - StripPrefix=0
 
         - id: ruta-donaciones
-          uri: lb://ms-donaciones
+          uri: ${DONACIONES_URI:lb://ms-donaciones}
           predicates:
             - Path=/donaciones,/donaciones/**
           filters:
             - StripPrefix=0
 
         - id: ruta-necesidades
-          uri: lb://ms-necesidades
+          uri: ${NECESIDADES_URI:lb://ms-necesidades}
           predicates:
             - Path=/necesidades,/necesidades/**
           filters:
             - StripPrefix=0
 
         - id: ruta-inventario
-          uri: lb://ms-inventario
+          uri: ${INVENTARIO_URI:lb://ms-inventario}
           predicates:
             - Path=/inventario,/inventario/**
           filters:
             - StripPrefix=0
 
         - id: ruta-logistica
-          uri: lb://ms-logistica
+          uri: ${LOGISTICA_URI:lb://ms-logistica}
           predicates:
             - Path=/logistica,/logistica/**
           filters:
@@ -45,4 +45,4 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/ #Ubica donde se aloja eureka para mostrar el servicio
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
