@@ -7,7 +7,7 @@ on:
       - "api-usuarios/**"
       - "api-donaciones/**"
       - "docker-compose-2.yml"
-
+  workflow_dispatch:
 jobs:
   build-push:
     runs-on: ubuntu-latest

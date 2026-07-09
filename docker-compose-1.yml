@@ -1,16 +1,18 @@
 version: '3.8'
 services:
   eureka-server:
-    image: ${ECR_REGISTRY}/donaton/eureka:latest
+    image: ${ECR_REGISTRY}/donatonback/eureka-server:latest
     container_name: eureka-server
     restart: always
     ports:
       - "8761:8761"
   api-gateway:
-    image: ${ECR_REGISTRY}/donaton/gateway:latest
+    image: ${ECR_REGISTRY}/donatonback/api-gateway:latest
     container_name: api-gateway
     restart: always
     ports:
       - "8086:8086"
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://localhost:8761/eureka/
+      - EUREKA_URI=http://localhost:8761/eureka/
+      - SERVER_PORT=8086
+      - SPRING_APPLICATION_NAME=api-gateway

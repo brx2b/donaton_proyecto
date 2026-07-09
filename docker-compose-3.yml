@@ -7,27 +7,33 @@ services:
     ports:
       - "6379:6379"
   ms-inventario:
-    image: ${ECR_REGISTRY}/donaton/api-inventario:latest
+    image: ${ECR_REGISTRY}/donatonback/ms-inventario:latest
     container_name: ms-inventario
     restart: always
     ports:
       - "8083:8083"
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+      - EUREKA_URI=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+      - SERVER_PORT=8083
+      - SPRING_APPLICATION_NAME=ms-inventario
   ms-logistica:
-    image: ${ECR_REGISTRY}/donaton/api-logistica:latest
+    image: ${ECR_REGISTRY}/donatonback/ms-logistica:latest
     container_name: ms-logistica
     restart: always
     ports:
       - "8084:8084"
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+      - EUREKA_URI=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+      - SERVER_PORT=8084
+      - SPRING_APPLICATION_NAME=ms-logistica
   ms-necesidades:
-    image: ${ECR_REGISTRY}/donaton/api-necesidades:latest
+    image: ${ECR_REGISTRY}/donatonback/ms-necesidades:latest
     container_name: ms-necesidades
     restart: always
     ports:
       - "8085:8085"
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${EUREKA_PRIVATE_IP}:8761/eureka/
-      - SPRING_DATA_REDIS_HOST=redis
+      - EUREKA_URI=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+      - SERVER_PORT=8085
+      - SPRING_APPLICATION_NAME=ms-necesidades
+      - REDIS_HOST=redis
