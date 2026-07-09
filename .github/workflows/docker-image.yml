@@ -7,7 +7,6 @@ on:
       - "api-**/**"
       - "eureka/**"
       - "gateway/**"
-      - "docker-compose.yml"
   workflow_dispatch:
 
 jobs:
@@ -18,18 +17,32 @@ jobs:
         include:
           - folder: api-donaciones
             repo: ms-donaciones
+            port: "8082"
+            instance_secret: "EC2_ID_DONACIONES"
           - folder: gateway
             repo: api-gateway
+            port: "8086"
+            instance_secret: "EC2_ID_GATEWAY"
           - folder: api-inventario
             repo: ms-inventario
+            port: "8083"
+            instance_secret: "EC2_ID_INVENTARIO"
           - folder: api-logistica
             repo: ms-logistica
+            port: "8084"
+            instance_secret: "EC2_ID_LOGISTICA"
           - folder: api-necesidades
             repo: ms-necesidades
+            port: "8085"
+            instance_secret: "EC2_ID_NECESIDADES"
           - folder: api-usuarios
             repo: ms-usuarios
+            port: "8081"
+            instance_secret: "EC2_ID_USUARIOS"
           - folder: eureka
             repo: eureka-server
+            port: "8761"
+            instance_secret: "EC2_ID_EUREKA"
 
     steps:
       - name: Checkout
@@ -68,30 +81,25 @@ jobs:
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
 
-  trigger-ssm-deploy:
-    needs: build-push-deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: config aws credenciales
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: despliegue
+      - name: Despliegue Individual vía AWS SSM
         run: |
+          echo "Enviando comando de actualización a la instancia de ${{ matrix.repo }}..."
           aws ssm send-command \
-            --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
+            --instance-ids "${{ secrets[matrix.instance_secret] }}" \
             --document-name "AWS-RunShellScript" \
-            --comment "Actualizando backend en EC2 Privada" \
+            --comment "Actualizando ${{ matrix.repo }} de forma independiente" \
             --parameters '{"commands":[
               "set -e",
-              "cd /home/ec2-user",
               "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
-              "export ECR_REGISTRY=${{ secrets.ECR_REGISTRY }}/donatonback",
-              "sudo docker compose pull",
-              "sudo docker compose up -d",
+              "IMAGE_URI=${{ secrets.ECR_REGISTRY }}/donatonback/${{ matrix.repo }}:latest",
+              "sudo docker pull $IMAGE_URI",
+              "sudo docker stop ${{ matrix.repo }} || true",
+              "sudo docker rm ${{ matrix.repo }} || true",
+              "sudo docker run -d --name ${{ matrix.repo }} --restart unless-stopped \
+                -p ${{ matrix.port }}:${{ matrix.port }} \
+                -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${{ secrets.EUREKA_PRIVATE_IP }}:8761/eureka/ \
+                -e EUREKA_INSTANCE_PREFER_IP_ADDRESS=true \
+                -e SPRING_DATA_REDIS_HOST=${{ secrets.REDIS_PRIVATE_IP }} \
+                $IMAGE_URI",
               "sudo docker image prune -f"
-            ]}' \
+            ]}'
