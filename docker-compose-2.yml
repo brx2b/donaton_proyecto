@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  ms-usuarios:
+    image: ${ECR_REGISTRY}/donaton/api-usuarios:latest
+    container_name: ms-usuarios
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${EUREKA_PRIVATE_IP}:8761/eureka/
+  ms-donaciones:
+    image: ${ECR_REGISTRY}/donaton/api-donaciones:latest
+    container_name: ms-donaciones
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://${EUREKA_PRIVATE_IP}:8761/eureka/

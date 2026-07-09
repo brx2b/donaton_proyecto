@@ -1,0 +1,61 @@
+name: Deploy Backend 2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api-usuarios/**"
+      - "api-donaciones/**"
+      - "docker-compose-2.yml"
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [api-usuarios, api-donaciones]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { java-version: "17", distribution: "temurin" }
+      - run: |
+          cd ${{ matrix.service }}
+          mvn clean package -DskipTests
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+      - run: |
+          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donaton/${{ matrix.service }}:latest"
+          docker build -t $IMAGE_URI ./${{ matrix.service }}
+          docker push $IMAGE_URI
+
+  deploy:
+    needs: build-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Deploy to EC2 via SSM
+        run: |
+          COMPOSE_CONTENT=$(cat docker-compose-2.yml | base64 -w 0)
+          aws ssm send-command \
+            --instance-ids "${{ secrets.EC2_ID_2 }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters "commands=[
+              'cd /home/ubuntu/',
+              'echo \"$COMPOSE_CONTENT\" | base64 -d > docker-compose-2.yml',
+              'echo \"EUREKA_PRIVATE_IP=${{ secrets.EUREKA_PRIVATE_IP }}\" > .env',
+              'echo \"ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com\" >> .env',
+              'aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com',
+              'docker compose -f docker-compose-2.yml pull',
+              'docker compose -f docker-compose-2.yml up -d'
+            ]"
