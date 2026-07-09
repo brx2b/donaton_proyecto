@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-inventario
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-inventario
+  template:
+    metadata:
+      labels:
+        app: ms-inventario
+    spec:
+      containers:
+        - name: ms-inventario
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/donatonback/ms-inventario:latest
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SERVER_PORT
+              value: "8083"
+            - name: SPRING_APPLICATION_NAME
+              value: "ms-inventario"
+            - name: EUREKA_URI
+              value: "http://eureka-service:8761/eureka/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-inventario-service
+spec:
+  selector:
+    app: ms-inventario
+  ports:
+    - port: 8083
+      targetPort: 8083
+  type: ClusterIP
