@@ -57,8 +57,7 @@ jobs:
             --parameters "commands=[
               'cd /home/ec2-user/',
               'echo \"$COMPOSE_CONTENT\" | base64 -d > docker-compose-3.yml',
-              'echo \"EUREKA_PRIVATE_IP=${{ secrets.EUREKA_PRIVATE_IP }}\" > .env',
-              'echo \"ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com\" >> .env',
+              'echo \"EUREKA_PRIVATE_IP=${{ secrets.EUREKA_PRIVATE_IP }}\" > .env',              'echo "MY_EC2_PRIVATE_IP=${{ secrets.BACKEND_3_PRIVATE_IP }}" >> .env',              'echo \"ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com\" >> .env',
               'aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com',
               'docker compose -f docker-compose-3.yml pull',
               'docker compose -f docker-compose-3.yml up -d'
