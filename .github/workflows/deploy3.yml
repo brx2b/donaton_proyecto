@@ -8,7 +8,7 @@ on:
       - "api-logistica/**"
       - "api-necesidades/**"
       - "docker-compose-3.yml"
-
+  workflow_dispatch:
 jobs:
   build-push:
     runs-on: ubuntu-latest
