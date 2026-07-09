@@ -57,7 +57,7 @@ jobs:
             --instance-ids "${{ secrets.EC2_ID_1 }}" \
             --document-name "AWS-RunShellScript" \
             --parameters "commands=[
-              'cd /home/ubuntu/',
+              'cd /home/ec2-user/',
               'echo \"$COMPOSE_CONTENT\" | base64 -d > docker-compose-1.yml',
               'echo \"ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com\" > .env',
               'aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com',

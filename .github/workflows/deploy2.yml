@@ -54,7 +54,7 @@ jobs:
             --instance-ids "${{ secrets.EC2_ID_2 }}" \
             --document-name "AWS-RunShellScript" \
             --parameters "commands=[
-              'cd /home/ubuntu/',
+              'cd /home/ec2-user/',
               'echo \"$COMPOSE_CONTENT\" | base64 -d > docker-compose-2.yml',
               'echo \"EUREKA_PRIVATE_IP=${{ secrets.EUREKA_PRIVATE_IP }}\" > .env',
               'echo \"ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com\" >> .env',
